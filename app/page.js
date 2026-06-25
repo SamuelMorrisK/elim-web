@@ -69,6 +69,7 @@ export default async function HomePage() {
 
   const recentAnnouncements = (announcements || []).slice(0, 4);
   const heroImage = getStrapiMedia(church?.heroImage?.url);
+  const heroImageMobile = getStrapiMedia(church?.heroImageMobile?.url) || heroImage;
   const promiseImage = getStrapiMedia(promise?.image?.url);
   const sermonImg = getStrapiMedia(sermon?.thumbnail?.url);
 
@@ -79,12 +80,23 @@ export default async function HomePage() {
         <div className="relative min-h-[78vh] flex items-center">
           {heroImage ? (
             <>
+              {/* Mobile hero (portrait) — hidden at md and up */}
+              <Image
+                src={heroImageMobile}
+                alt={church?.name || "Elim House of Worship"}
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover md:hidden"
+              />
+              {/* Desktop hero (wide) — hidden below md */}
               <Image
                 src={heroImage}
                 alt={church?.name || "Elim House of Worship"}
                 fill
                 priority
-                className="object-cover"
+                sizes="100vw"
+                className="object-cover hidden md:block"
               />
               <div
                 className="absolute inset-0"
@@ -157,6 +169,7 @@ export default async function HomePage() {
                   src={promiseImage}
                   alt={promise?.reference || "Today's promise from Elim House of Worship"}
                   fill
+                  sizes="(max-width: 640px) 100vw, 384px"
                   className="object-contain"
                   priority
                 />
@@ -216,6 +229,7 @@ export default async function HomePage() {
                           src={img}
                           alt={event.title}
                           fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       )}
@@ -283,6 +297,7 @@ export default async function HomePage() {
                     src={sermonImg}
                     alt={sermon.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
                   />
                 )}

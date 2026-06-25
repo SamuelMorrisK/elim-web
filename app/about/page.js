@@ -8,11 +8,13 @@ export const metadata = { title: "About" };
 
 export default async function AboutPage() {
   const [church, leaders] = await Promise.all([getChurch(), getLeaders()]);
-  const heroImage = getStrapiMedia(church?.heroImage?.url);
+  const aboutImage =
+    getStrapiMedia(church?.aboutImage?.url) ||
+    getStrapiMedia(church?.heroImage?.url);
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
-      <SectionHeading eyebrow="Our Story" title={`About ${church?.name || "Us"}`} />
+      <SectionHeading eyebrow="Our Story" title={`${church?.name || "Us"}`} />
       {church?.nameTelugu && (
         <p className="mt-2 text-2xl font-[family-name:var(--font-display)] text-[var(--color-clay)]">
           {church.nameTelugu}
@@ -24,12 +26,13 @@ export default async function AboutPage() {
         </p>
       )}
 
-      {heroImage && (
+      {aboutImage && (
         <div className="relative aspect-[21/9] mt-8 mb-10 rounded-md overflow-hidden bg-[var(--color-forest)]/10">
           <Image
-            src={heroImage}
-            alt={church?.heroImage?.alternativeText || church?.name || "Church"}
+            src={aboutImage}
+            alt={church?.aboutImage?.alternativeText || church?.name || "Church"}
             fill
+            sizes="(max-width: 1024px) 100vw, 1024px"
             className="object-cover"
           />
         </div>
@@ -60,6 +63,7 @@ export default async function AboutPage() {
                         src={photo}
                         alt={leader.name}
                         fill
+                        sizes="(max-width: 640px) 100vw, 50vw"
                         className="object-cover"
                       />
                     </div>
