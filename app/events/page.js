@@ -2,13 +2,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import SectionHeading from "@/components/SectionHeading";
-import { getEvents, getStrapiMedia, formatDate, parseLocalDate } from "@/lib/strapi";
+import {
+  getEvents,
+  getStrapiMedia,
+  formatEventDateRange,
+  parseLocalDate,
+} from "@/lib/strapi";
 
 export const metadata = { title: "Events" };
 
 // A single event card — reused for both sections
 function EventCard({ event }) {
-  const img = getStrapiMedia(event.image?.url);
+  // Prefer a dedicated card thumbnail; fall back to the detail poster.
+  const img = getStrapiMedia(event.cardImage?.url) || getStrapiMedia(event.image?.url);
+  const altSource = event.cardImage?.alternativeText || event.image?.alternativeText;
+  const dateLabel = formatEventDateRange(event.date, event.endDate);
+
   return (
     <Link
       href={`/events/${event.slug}`}
@@ -18,14 +27,15 @@ function EventCard({ event }) {
         {img && (
           <Image
             src={img}
-            alt={event.image?.alternativeText || event.title}
+            alt={altSource || event.title}
             fill
+            sizes="(max-width: 640px) 100vw, 260px"
             className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         )}
       </div>
       <div className="p-6 flex flex-col justify-center">
-        <p className="eyebrow mb-2">{formatDate(event.date)}</p>
+        <p className="eyebrow mb-2">{dateLabel}</p>
         <h2 className="text-2xl mb-2 group-hover:text-[var(--color-clay)] transition-colors">
           {event.title}
         </h2>
@@ -46,13 +56,18 @@ export default async function EventsPage() {
   const upcoming = [];
   const past = [];
   for (const event of events || []) {
-    const d = parseLocalDate(event.date);
-    if (d && d >= today) upcoming.push(event);
+    // A multi-day event is still "upcoming" until its end date passes.
+    const endD = parseLocalDate(event.endDate) || parseLocalDate(event.date);
+    if (endD && endD >= today) upcoming.push(event);
     else past.push(event);
   }
 
   upcoming.sort((a, b) => parseLocalDate(a.date) - parseLocalDate(b.date));
-  past.sort((a, b) => parseLocalDate(b.date) - parseLocalDate(a.date));
+  past.sort(
+    (a, b) =>
+      (parseLocalDate(b.endDate) || parseLocalDate(b.date)) -
+      (parseLocalDate(a.endDate) || parseLocalDate(a.date))
+  );
 
   const hasAny = (events || []).length > 0;
 

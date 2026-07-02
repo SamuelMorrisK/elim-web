@@ -11,6 +11,7 @@ import {
   getTodaysPromise,
   getStrapiMedia,
   formatDateShort,
+  formatEventDateRange,
   parseLocalDate,
 } from "@/lib/strapi";
 
@@ -51,20 +52,22 @@ export default async function HomePage() {
   const sermon = sermons?.[0] || null;
 
   // Top 3 events: upcoming first (soonest), then recent past — never blank.
+  // Multi-day events stay "upcoming" until their end date passes.
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  const eventEnd = (e) => parseLocalDate(e.endDate) || parseLocalDate(e.date);
   const upcoming = (events || [])
     .filter((e) => {
-      const d = parseLocalDate(e.date);
+      const d = eventEnd(e);
       return d && d >= today;
     })
     .sort((a, b) => parseLocalDate(a.date) - parseLocalDate(b.date));
   const pastEvents = (events || [])
     .filter((e) => {
-      const d = parseLocalDate(e.date);
+      const d = eventEnd(e);
       return d && d < today;
     })
-    .sort((a, b) => parseLocalDate(b.date) - parseLocalDate(a.date));
+    .sort((a, b) => eventEnd(b) - eventEnd(a));
   const homeEvents = [...upcoming, ...pastEvents].slice(0, 3);
 
   const recentAnnouncements = (announcements || []).slice(0, 4);
@@ -216,7 +219,9 @@ export default async function HomePage() {
           ) : (
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {homeEvents.map((event) => {
-                const img = getStrapiMedia(event.image?.url);
+                const img =
+                  getStrapiMedia(event.cardImage?.url) ||
+                  getStrapiMedia(event.image?.url);
                 return (
                   <Link
                     key={event.id}
@@ -235,7 +240,9 @@ export default async function HomePage() {
                       )}
                     </div>
                     <div className="p-5">
-                      <p className="eyebrow mb-2">{formatDateShort(event.date)}</p>
+                      <p className="eyebrow mb-2">
+                        {formatEventDateRange(event.date, event.endDate)}
+                      </p>
                       <h3 className="text-xl mb-1 group-hover:text-[var(--color-clay)] transition-colors">
                         {event.title}
                       </h3>
