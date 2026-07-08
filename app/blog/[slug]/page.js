@@ -11,7 +11,7 @@ import {
   formatDate,
 } from "@/lib/strapi";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://weareelim.vercel.app";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://weareelim.in";
 
 export async function generateStaticParams() {
   const posts = await getBlogs();

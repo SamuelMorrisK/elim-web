@@ -14,7 +14,7 @@ import {
   formatTimeRange,
 } from "@/lib/strapi";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://weareelim.vercel.app";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://weareelim.in";
 
 export async function generateStaticParams() {
   const events = await getEvents();
