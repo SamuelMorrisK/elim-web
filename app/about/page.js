@@ -1,7 +1,10 @@
 // app/about/page.js
 import Image from "next/image";
+import Link from "next/link";
 import SectionHeading from "@/components/SectionHeading";
 import RichText from "@/components/RichText";
+import RecognitionsButton from "@/components/RecognitionsButton";
+import ImageLightbox from "@/components/ImageLightbox";
 import { getChurch, getLeaders, getStrapiMedia } from "@/lib/strapi";
 
 export const metadata = { title: "About" };
@@ -11,6 +14,8 @@ export default async function AboutPage() {
   const aboutImage =
     getStrapiMedia(church?.aboutImage?.url) ||
     getStrapiMedia(church?.heroImage?.url);
+
+  const marriageLicense = getStrapiMedia(church?.marriageLicense?.url);
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
@@ -52,6 +57,9 @@ export default async function AboutPage() {
           <div className="mt-8 grid gap-8 sm:grid-cols-2">
             {leaders.map((leader) => {
               const photo = getStrapiMedia(leader.photo?.url);
+              const recognitions = Array.isArray(leader.recognitions)
+                ? leader.recognitions
+                : [];
               return (
                 <div
                   key={leader.id}
@@ -85,10 +93,42 @@ export default async function AboutPage() {
                         {leader.bio}
                       </p>
                     )}
+                    <RecognitionsButton images={recognitions} name={leader.name} />
                   </div>
                 </div>
               );
             })}
+          </div>
+        </section>
+      )}
+
+      {/* Christian Marriages service */}
+      {(church?.marriageServiceNote || marriageLicense) && (
+        <section className="mt-16 pt-12 border-t border-[var(--color-forest)]/10">
+          <SectionHeading eyebrow="Christian Marriages" title="Begin Your Journey Together" />
+          <div className="mt-8 grid gap-8 md:grid-cols-2 md:items-start">
+            <div>
+              {church?.marriageServiceNote && (
+                <div className="text-lg body-prose">
+                  <RichText content={church.marriageServiceNote} />
+                </div>
+              )}
+              <Link
+                href="/contact"
+                className="mt-6 inline-block bg-[var(--color-gold)] text-[var(--color-forest-dark)] px-6 py-3 rounded-sm font-semibold text-sm tracking-wide hover:bg-[var(--color-cream)] transition-colors"
+              >
+                Contact Us to Enquire
+              </Link>
+            </div>
+
+            {marriageLicense && (
+              <ImageLightbox
+                src={marriageLicense}
+                alt={church?.marriageLicense?.alternativeText || "Marriage officiant license"}
+                width={church?.marriageLicense?.width}
+                height={church?.marriageLicense?.height}
+              />
+            )}
           </div>
         </section>
       )}
@@ -124,7 +164,6 @@ export default async function AboutPage() {
               </p>
             )}
 
-            {/* Map — sits below the address, in the right column */}
             {church?.mapEmbedUrl && (
               <div className="mt-6">
                 <div className="rounded-md overflow-hidden border border-[var(--color-forest)]/10 shadow-sm">
