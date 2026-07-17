@@ -11,15 +11,16 @@ export default function SiteFooter({ church }) {
   return (
     <footer className="bg-[var(--color-forest-dark)] text-[var(--color-cream)] mt-20">
       <div className="max-w-7xl mx-auto px-6 sm:px-10 py-14">
-        <div className="grid gap-10 md:grid-cols-[auto_1.6fr_1.1fr_0.9fr] md:items-start md:gap-x-14">
+        <div className="grid gap-10 lg:grid-cols-[auto_1.6fr_1.1fr_0.9fr] lg:items-start lg:gap-x-14">
           {/* Column 1 — Photo */}
           {footerImage && (
-            <div className="flex justify-center md:justify-start">
+            <div className="flex justify-center lg:justify-start">
               <div className="relative w-56 h-40 rounded-lg overflow-hidden ring-2 ring-[var(--color-gold)]/70 ring-offset-4 ring-offset-[var(--color-forest-dark)]">
                 <Image
                   src={footerImage}
                   alt={church?.footerImage?.alternativeText || name}
                   fill
+                  sizes="224px"
                   className="object-cover object-center"
                 />
               </div>
@@ -28,7 +29,7 @@ export default function SiteFooter({ church }) {
 
           {/* Column 2 — Identity */}
           <div>
-            <h3 className="font-[family-name:var(--font-display)] text-4xl font-semibold !text-[var(--color-clay)] whitespace-nowrap">
+            <h3 className="font-[family-name:var(--font-display)] text-4xl font-semibold !text-[var(--color-clay)]">
               {name}
             </h3>
             {church?.nameTelugu && (

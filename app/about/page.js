@@ -106,7 +106,7 @@ export default async function AboutPage() {
       {(church?.marriageServiceNote || marriageLicense) && (
         <section className="mt-16 pt-12 border-t border-[var(--color-forest)]/10">
           <SectionHeading eyebrow="Christian Marriages" title="Begin Your Journey Together" />
-          <div className="mt-8 grid gap-8 md:grid-cols-2 md:items-start">
+          <div className="mt-8 grid gap-8 lg:grid-cols-2 lg:items-start">
             <div>
               {church?.marriageServiceNote && (
                 <div className="text-lg body-prose">

@@ -38,12 +38,26 @@ const anekTelugu = Anek_Telugu({
   display: "swap",
 });
 
+// Structured location facts for JSON-LD (kept explicit for accuracy/consistency)
+const CHURCH_GEO = { lat: 16.427609374258676, lng: 80.99459619551205 };
+const CHURCH_ADDRESS = {
+  streetAddress: "D.No. 17/274, Slater Peta",
+  addressLocality: "Gudivada",
+  addressRegion: "Andhra Pradesh",
+  postalCode: "521301",
+  addressCountry: "IN",
+};
+
 export const metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://weareelim.in"
+  ),
   title: {
     default: "Elim House Of Worship",
     template: "%s | Elim House Of Worship",
   },
-  description: "A welcoming place of faith.",
+  description:
+    "Elim House Of Worship is a Christ-centered church in Gudivada, Andhra Pradesh — worship, prayer, discipleship, and community.",
 };
 
 export default async function RootLayout({ children }) {
@@ -56,12 +70,40 @@ export default async function RootLayout({ children }) {
   }
   const churchName = church?.name || "Elim House Of Worship";
 
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://weareelim.in";
+  const logoUrl = `${siteUrl}/pic1.png`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Church",
+    name: churchName,
+    url: siteUrl,
+    logo: logoUrl,
+    image: logoUrl,
+    telephone: "+917396176999",
+    email: "office@weareelim.in",
+    address: {
+      "@type": "PostalAddress",
+      ...CHURCH_ADDRESS,
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: CHURCH_GEO.lat,
+      longitude: CHURCH_GEO.lng,
+    },
+  };
+
   return (
     <html
       lang="en"
       className={`${cormorant.variable} ${inter.variable} ${notoTelugu.variable} ${anekTelugu.variable}`}
     >
       <body className="min-h-screen flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <SiteHeader churchName={churchName} />
         <div className="flex-1">{children}</div>
         <SiteFooter church={church} />

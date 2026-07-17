@@ -15,6 +15,36 @@ import {
   parseLocalDate,
 } from "@/lib/strapi";
 
+export async function generateMetadata() {
+  const church = await getChurch();
+
+  const title =
+    church?.seoTitle ||
+    (church?.name
+      ? `${church.name} | Christian Church in Gudivada, Andhra Pradesh`
+      : "Elim House Of Worship | Christian Church in Gudivada, Andhra Pradesh");
+
+  const description =
+    church?.seoDescription ||
+    "Elim House Of Worship is a Christ-centered church in Gudivada, Andhra Pradesh, dedicated to worship, discipleship, prayer, fellowship, and community outreach. Join us for worship services and grow in faith through God's Word.";
+
+  const seoImage =
+    getStrapiMedia(church?.seoImage?.url) || getStrapiMedia(church?.heroImage?.url);
+
+  return {
+    // absolute bypasses the layout's "%s | Elim House Of Worship" template
+    title: { absolute: title },
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      url: process.env.NEXT_PUBLIC_SITE_URL || undefined,
+      images: seoImage ? [{ url: seoImage }] : undefined,
+    },
+  };
+}
+
 // Renders service-times text, coloring day-header lines (those ending in ":") in clay.
 function ServiceTimes({ text }) {
   if (!text) return null;
@@ -90,7 +120,7 @@ export default async function HomePage() {
                 fill
                 priority
                 sizes="100vw"
-                className="object-cover md:hidden"
+                className="object-cover lg:hidden"
               />
               {/* Desktop hero (wide) — hidden below md */}
               <Image
@@ -99,7 +129,7 @@ export default async function HomePage() {
                 fill
                 priority
                 sizes="100vw"
-                className="object-cover hidden md:block"
+                className="object-cover hidden lg:block"
               />
               <div
                 className="absolute inset-0"
@@ -142,6 +172,13 @@ export default async function HomePage() {
                 {church.tagline}
               </p>
             )}
+            {/* Location line — helps local SEO and orients visitors */}
+            <p
+              style={{ textShadow: "0 1px 8px rgba(0,0,0,0.5)" }}
+              className="mt-3 text-base text-[var(--color-cream)]/75"
+            >
+              A Christ-centered church family in Gudivada, Andhra Pradesh.
+            </p>
             <div className="mt-9 flex flex-wrap gap-4">
               <Link
                 href="/about"

@@ -86,7 +86,7 @@ export default function SiteHeader({ churchName }) {
   return (
     <header className="sticky top-0 z-50 bg-[var(--color-gold)] border-b border-[var(--color-forest)]/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-20 md:h-32">
+        <div className="flex items-center justify-between h-20 lg:h-32">
           {/* Logo (left) */}
           <Link
             href="/"
@@ -97,12 +97,12 @@ export default function SiteHeader({ churchName }) {
             <img
               src="/pic1.png"
               alt={churchName || "Elim House of Worship"}
-              className="h-16 w-16 md:h-28 md:w-28 object-contain"
+              className="h-16 w-16 lg:h-28 lg:w-28 object-contain"
             />
           </Link>
 
           {/* Desktop nav (right) */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-8">
             <Link href="/" className={linkClass}>
               Home
             </Link>
@@ -186,7 +186,7 @@ export default function SiteHeader({ churchName }) {
           <button
             type="button"
             onClick={() => (open ? closeMobile() : setOpen(true))}
-            className="md:hidden relative z-50 p-3 -mr-3 text-[var(--color-forest-dark)]"
+            className="lg:hidden relative z-50 p-3 -mr-3 text-[var(--color-forest-dark)]"
             aria-label="Toggle menu"
             aria-expanded={open}
           >
@@ -199,7 +199,7 @@ export default function SiteHeader({ churchName }) {
 
       {/* Mobile menu */}
       {open && (
-        <nav className="md:hidden border-t border-[var(--color-forest)]/20 bg-[var(--color-gold)]">
+        <nav className="lg:hidden border-t border-[var(--color-forest)]/20 bg-[var(--color-gold)]">
           <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1">
             <Link href="/" onClick={closeMobile} className={mobileLinkClass}>
               Home
